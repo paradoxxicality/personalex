@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    :root {
+      --nord0: #2e3440;
+      --nord1: #3b4252;
+      --nord2: #434c5e;
+      --nord3: #4c566a;
+      --nord4: #d8dee9;
+      --nord5: #e5e9f0;
+      --nord6: #eceff4;
+      --nord7: #8fbcbb;
+      --nord8: #88c0d0;
+      --nord9: #81a1c1;
+      --nord10: #5e81ac;
+      --nord11: #bf616a;
+      --nord12: #d08770;
+      --nord13: #ebcb8b;
+      --nord14: #a3be8c;
+      --nord15: #b48ead;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--nord0);
+      color: var(--nord4);
+    }
+    #chatbox {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 50px;
+      border: 1px solid var(--nord2);
+      overflow: auto;
+      padding: 10px;
+      background-color: var(--nord1);
+    }
+    #input-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      min-height: 50px;
+      display: flex;
+    }
+    #message {
+      flex-grow: 1;
+      padding: 5px;
+      color: var(--nord4);
+      background-color: var(--nord2);
+      border: none;
+    }
+    #send {
+      width: 60px;
+      padding: 5px;
+      color: var(--nord4);
+      background-color: var(--nord7);
+      border: none;
+      cursor: pointer;
+    }
+    p {
+      margin-bottom: 10px;
+      padding: 5px;
+      border-radius: 5px;
+    }
+    .user-message {
+      background-color: var(--nord10);
+    }
+    .other-message {
+      background-color: var(--nord3);
+    }
+    textarea {
+      resize: none;
+      overflow-y: hidden;
+    }
+    .message-text {
+        white-space: pre-wrap; /* CSS3 */
+        white-space: -moz-pre-wrap; /* Firefox */
+        white-space: -pre-wrap; /* Opera <7 */
+        white-space: -o-pre-wrap; /* Opera 7 */
+        word-wrap: break-word; /* IE */
+    }
+    pre {
+    background-color: #3b4252;
+    color: #d8dee9;
+    border-left: #81a1c1 solid 5px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9em;
+    line-height: 1.5em;
+    margin-bottom: 20px;
+    max-width: 100%;
+    overflow: auto;
+    padding: 10px 20px;
+    tab-size: 4;
+    width: 90%;
+    white-space: pre-wrap; /* CSS3 */
+    white-space: -moz-pre-wrap; /* Firefox */
+    white-space: -pre-wrap; /* Opera <7 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* IE */
+} 
+  </style>
+</head>
+<body>
+  <div id="chatbox"></div>
+  <div id="input-container">
+    <textarea id="message"></textarea>
+    <button id="send">Send</button>
+  </div>
+
+<script>
+const chatbox = document.querySelector('#chatbox');
+const message = document.querySelector('#message');
+const send = document.querySelector('#send');
+
+function sendMessage(text, className) {
+    if (text) {
+        let codeBlock = false;
+        let codeText = '';
+        let startIndex = 0;
+        let endIndex = 0;
+        while ((startIndex = text.indexOf("'''", endIndex)) !== -1) {
+            endIndex = text.indexOf("'''", startIndex + 3);
+            if (endIndex === -1) {
+                break;
+            }
+            if (!codeBlock) {
+                const normalText = text.slice(0, startIndex);
+                const p = document.createElement('p');
+                p.textContent = normalText;
+                p.classList.add(className);
+                p.classList.add('message-text');
+                chatbox.appendChild(p);
+            }
+            codeBlock = !codeBlock;
+            codeText = text.slice(startIndex + 3, endIndex);
+            const p = document.createElement('p');
+            p.classList.add(className);
+            p.classList.add('message-text');
+            const pre = document.createElement('pre');
+            pre.textContent = codeText;
+            p.appendChild(pre);
+            chatbox.appendChild(p);
+            text = text.slice(endIndex + 3);
+            endIndex = 0;
+        }
+        if (text.length > 0) {
+            const p = document.createElement('p');
+            p.textContent = text;
+            p.classList.add(className);
+            p.classList.add('message-text');
+            chatbox.appendChild(p);
+        }
+        chatbox.scrollTop = chatbox.scrollHeight;
+        message.style.height = 'auto';
+        message.style.height = message.scrollHeight + 'px';
+    }
+}
+
+send.addEventListener('click', () => {
+    sendMessage(message.value, 'user-message');
+    message.value = '';
+});
+
+message.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage(message.value, 'user-message');
+        message.value = '';
+        message.style.height = 'auto';
+        message.style.height = message.scrollHeight + 'px';
+    } else if (event.key === 'Enter') {
+        setTimeout(() => {
+            message.style.height = 'auto';
+            message.style.height = message.scrollHeight + 'px';
+        }, 0);
+    }
+});
+
+message.addEventListener('keydown', (event) => {
+  // check if ctrl is pressed 
+    if (event.key === "Control" && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage(message.value, 'other-message');
+        message.value = '';
+        message.style.height = 'auto';
+        message.style.height = message.scrollHeight + 'px';
+    } else if (event.key === 'Enter') {
+        setTimeout(() => {
+            message.style.height = 'auto';
+            message.style.height = message.scrollHeight + 'px';
+        }, 0);
+    }
+});
+
+// Example of creating a message from someone else
+sendMessage("Hello there!\nHow are you?\n'''This is a code block\nwith multiple lines'''", 'other-message');
+
+// Automatically resize the textarea when the page loads
+message.style.height = 'auto';
+message.style.height = message.scrollHeight + 'px';
+</script>
+</body>
+</html>
