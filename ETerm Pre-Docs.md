@@ -101,3 +101,10 @@ local Command = ETerm:NewCommand({
     Callback = (No Default) : <function> -- Function which is called when the command is called.
     The arguments are strings in an array ex: {"arg1", "arg2"}
 ]]
+```
+
+## Initializing the UI (REQUIRED)
+For the UI to be actually created you need to intialize the window!
+```lua
+Window:Init()
+```
