@@ -12,11 +12,10 @@ Welcome to the Build Island ModKit Unofficial Documentation! This documentation 
 4. [Getting Started](#getting-started)
 5. [Examples](#examples)
 6. [Notes](#notes)
-7. [Contact](#contact)
 
 ## Overview
 
-The Build Island ModKit allows you to create and customize new content for the game "Build Island." This modkit includes the following key components:
+The Build Island ModKit allows you to create and customize new content for the game Build Island on Roblox. This modkit includes the following key components:
 
 - `Gear`: Objects placed under the `Gear` Folder will be parented into the `Lighting` and made accessible through the `give` or `admin` commands during the game.
 - `Items`: Objects placed under the `Items` Folder will be imported into the Stamper Tool upon loading the mod. Each `Item` must contain a `BasePart` or `Model` named `Model` and an `IntValue` named `AssetId`, which holds the AssetId of the uploaded `Items.Model`. Additionally, an `IntValue` named `SubtypeOfId` can be used to define a subtype relationship between different items.
